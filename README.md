@@ -1,6 +1,6 @@
 # systemD++
 
-##W.I.P.
+## W.I.P.
 
 A header only simplification of the systemD's dbus api for c++ developers.
 based on dbuscplusplus for dbus action.
