@@ -250,6 +250,13 @@ namespace systemd1
                 ri >> argout;
                 return argout;
             }
+
+            void Reload()
+            {
+                ::DBus::CallMessage call;
+                call.member("Reload");
+                ::DBus::Message ret = invoke_method (call);
+            }
     };
 }
 
