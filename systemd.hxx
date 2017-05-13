@@ -395,6 +395,11 @@ namespace systemd
                     return false;
                 }
             }
+
+            void DaemonReload()
+            {
+                systemd.Reload();
+            }
     };
 }
 #endif //__SYSTEMD__
