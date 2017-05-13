@@ -7,14 +7,9 @@ int main()
     systemd::unit crond = system.GetUnit("sshd.service");
     std::cout << crond.ActiveState() << std::endl;
 
-    if(system.EnableUnit("crond.service"))
+    if(system.DisableUnit("crond.service"))
     {
-        std::cout << "enabled crond" << std::endl;
+        std::cout << "disabled crond" << std::endl;
     }
-
-    //if(system.DisableUnit("crond.service"))
-    //{
-    //    std::cout << "disabled crond" << std::endl;
-    //}
 
 }

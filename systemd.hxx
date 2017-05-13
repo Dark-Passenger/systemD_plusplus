@@ -347,24 +347,52 @@ namespace systemd
                 return unit(con, systemd.LoadUnit(service_name).c_str(), name);
             }
 
-            DBus::Path StartUnit(const std::string &service_name, const std::string &mode)
+            bool StartUnit(const std::string &service_name, const std::string &mode = "fail")
             {
-                return systemd.StartUnit(service_name, mode);
+                if(systemd.StartUnit(service_name, mode).size() != 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
 
-            DBus::Path StopUnit(const std::string &service_name, const std::string &mode)
+            bool StopUnit(const std::string &service_name, const std::string &mode = "fail")
             {
-                return systemd.StopUnit(service_name, mode);
+                if(systemd.StopUnit(service_name, mode).size() != 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
 
-            DBus::Path RestartUnit(const std::string &service_name, const std::string &mode)
+            bool RestartUnit(const std::string &service_name, const std::string &mode = "fail")
             {
-                return systemd.RestartUnit(service_name, mode);
+                if(systemd.RestartUnit(service_name, mode).size() != 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
 
-            DBus::Path ReloadUnit(const std::string &service_name, const std::string &mode)
+            bool ReloadUnit(const std::string &service_name, const std::string &mode = "fail")
             {
-                return systemd.ReloadUnit(service_name, mode);
+                if(systemd.ReloadUnit(service_name, mode).size() != 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
 
             bool EnableUnit(const std::string &service_name)
