@@ -9,10 +9,43 @@
 #include <dbus-c++-1/dbus-c++/dbus.h>
 #include <cassert>
 
-namespace systemd1
+namespace login1
 {
 
+    class Manager_proxy
+        : public ::DBus::InterfaceProxy
+    {
+        public:
 
+            Manager_proxy()
+                : ::DBus::InterfaceProxy("org.freedesktop.login1.Manager"){}
+
+            /* properties exported by this interface */
+            void PowerOff(const bool& argin0)
+            {
+                ::DBus::CallMessage call;
+                ::DBus::MessageIter wi = call.writer();
+
+                wi << argin0;
+                call.member("PowerOff");
+                ::DBus::Message ret = invoke_method (call);
+            }
+
+            void Reboot(const bool& argin0)
+            {
+                ::DBus::CallMessage call;
+                ::DBus::MessageIter wi = call.writer();
+
+                wi << argin0;
+                call.member("Reboot");
+                ::DBus::Message ret = invoke_method (call);
+            }
+    };
+
+}
+
+namespace systemd1
+{
     class Unit_proxy
         : public ::DBus::InterfaceProxy
     {
@@ -79,57 +112,6 @@ namespace systemd1
                 : ::DBus::InterfaceProxy("org.freedesktop.systemd1.Manager")
             {}
 
-        public:
-
-            /* properties exported by this interface */
-            const std::vector< std::string > UnitPath() {
-                ::DBus::CallMessage call ;
-                call.member("Get"); call.interface("org.freedesktop.DBus.Properties");
-                ::DBus::MessageIter wi = call.writer();
-                const std::string interface_name = "org.freedesktop.systemd1.Manager";
-                const std::string property_name  = "UnitPath";
-                wi << interface_name;
-                wi << property_name;
-                ::DBus::Message ret = this->invoke_method (call);
-                ::DBus::MessageIter ri = ret.reader ();
-                ::DBus::Variant argout;
-                ri >> argout;
-                return argout;
-            };
-            const std::string ControlGroup() {
-                ::DBus::CallMessage call ;
-                call.member("Get"); call.interface("org.freedesktop.DBus.Properties");
-                ::DBus::MessageIter wi = call.writer();
-                const std::string interface_name = "org.freedesktop.systemd1.Manager";
-                const std::string property_name  = "ControlGroup";
-                wi << interface_name;
-                wi << property_name;
-                ::DBus::Message ret = this->invoke_method (call);
-                ::DBus::MessageIter ri = ret.reader ();
-                ::DBus::Variant argout;
-                ri >> argout;
-                return argout;
-            };
-            const std::string SystemState() {
-                ::DBus::CallMessage call ;
-                call.member("Get"); call.interface("org.freedesktop.DBus.Properties");
-                ::DBus::MessageIter wi = call.writer();
-                const std::string interface_name = "org.freedesktop.systemd1.Manager";
-                const std::string property_name  = "SystemState";
-                wi << interface_name;
-                wi << property_name;
-                ::DBus::Message ret = this->invoke_method (call);
-                ::DBus::MessageIter ri = ret.reader ();
-                ::DBus::Variant argout;
-                ri >> argout;
-                return argout;
-            };
-
-        public:
-
-            /* methods exported by this interface,
-             * this functions will invoke the corresponding methods on the remote objects
-             */
             ::DBus::Path GetUnit(const std::string& argin0)
             {
                 ::DBus::CallMessage call;
@@ -191,7 +173,7 @@ namespace systemd1
                 return argout;
             }
 
-            ::DBus::Path StartUnitReplace(const std::string& argin0, const std::string& argin1, const std::string& argin2)
+            void EnableUnitFiles(const std::vector< std::string >& argin0, const bool& argin1, const bool& argin2, bool& argout0, std::vector< ::DBus::Struct< std::string, std::string, std::string > >& argout1)
             {
                 ::DBus::CallMessage call;
                 ::DBus::MessageIter wi = call.writer();
@@ -199,13 +181,26 @@ namespace systemd1
                 wi << argin0;
                 wi << argin1;
                 wi << argin2;
-                call.member("StartUnitReplace");
+                call.member("EnableUnitFiles");
                 ::DBus::Message ret = invoke_method (call);
                 ::DBus::MessageIter ri = ret.reader();
 
-                ::DBus::Path argout;
-                ri >> argout;
-                return argout;
+                ri >> argout0;
+                ri >> argout1;
+            }
+
+            void DisableUnitFiles(const std::vector< std::string >& argin0, const bool& argin1, std::vector< ::DBus::Struct< std::string, std::string, std::string > >& argout0)
+            {
+                ::DBus::CallMessage call;
+                ::DBus::MessageIter wi = call.writer();
+
+                wi << argin0;
+                wi << argin1;
+                call.member("DisableUnitFiles");
+                ::DBus::Message ret = invoke_method (call);
+                ::DBus::MessageIter ri = ret.reader();
+
+                ri >> argout0;
             }
 
             ::DBus::Path StopUnit(const std::string& argin0, const std::string& argin1)
@@ -255,238 +250,8 @@ namespace systemd1
                 ri >> argout;
                 return argout;
             }
-
-            ::DBus::Path TryRestartUnit(const std::string& argin0, const std::string& argin1)
-            {
-                ::DBus::CallMessage call;
-                ::DBus::MessageIter wi = call.writer();
-
-                wi << argin0;
-                wi << argin1;
-                call.member("TryRestartUnit");
-                ::DBus::Message ret = invoke_method (call);
-                ::DBus::MessageIter ri = ret.reader();
-
-                ::DBus::Path argout;
-                ri >> argout;
-                return argout;
-            }
-
-            ::DBus::Path ReloadOrRestartUnit(const std::string& argin0, const std::string& argin1)
-            {
-                ::DBus::CallMessage call;
-                ::DBus::MessageIter wi = call.writer();
-
-                wi << argin0;
-                wi << argin1;
-                call.member("ReloadOrRestartUnit");
-                ::DBus::Message ret = invoke_method (call);
-                ::DBus::MessageIter ri = ret.reader();
-
-                ::DBus::Path argout;
-                ri >> argout;
-                return argout;
-            }
-
-            ::DBus::Path ReloadOrTryRestartUnit(const std::string& argin0, const std::string& argin1)
-            {
-                ::DBus::CallMessage call;
-                ::DBus::MessageIter wi = call.writer();
-
-                wi << argin0;
-                wi << argin1;
-                call.member("ReloadOrTryRestartUnit");
-                ::DBus::Message ret = invoke_method (call);
-                ::DBus::MessageIter ri = ret.reader();
-
-                ::DBus::Path argout;
-                ri >> argout;
-                return argout;
-            }
-
-            void KillUnit(const std::string& argin0, const std::string& argin1, const int32_t& argin2)
-            {
-                ::DBus::CallMessage call;
-                ::DBus::MessageIter wi = call.writer();
-
-                wi << argin0;
-                wi << argin1;
-                wi << argin2;
-                call.member("KillUnit");
-                ::DBus::Message ret = invoke_method (call);
-            }
-
-            void ResetFailedUnit(const std::string& argin0)
-            {
-                ::DBus::CallMessage call;
-                ::DBus::MessageIter wi = call.writer();
-
-                wi << argin0;
-                call.member("ResetFailedUnit");
-                ::DBus::Message ret = invoke_method (call);
-            }
-
-            std::vector< ::DBus::Struct< std::string, uint32_t, std::string > > GetUnitProcesses(const std::string& argin0)
-            {
-                ::DBus::CallMessage call;
-                ::DBus::MessageIter wi = call.writer();
-
-                wi << argin0;
-                call.member("GetUnitProcesses");
-                ::DBus::Message ret = invoke_method (call);
-                ::DBus::MessageIter ri = ret.reader();
-
-                std::vector< ::DBus::Struct< std::string, uint32_t, std::string > > argout;
-                ri >> argout;
-                return argout;
-            }
-
-            void ResetFailed()
-            {
-                ::DBus::CallMessage call;
-                call.member("ResetFailed");
-                ::DBus::Message ret = invoke_method (call);
-            }
-
-            std::vector< ::DBus::Struct< std::string, std::string, std::string, std::string, std::string, std::string, ::DBus::Path, uint32_t, std::string, ::DBus::Path > > ListUnits()
-            {
-                ::DBus::CallMessage call;
-                call.member("ListUnits");
-                ::DBus::Message ret = invoke_method (call);
-                ::DBus::MessageIter ri = ret.reader();
-
-                std::vector< ::DBus::Struct< std::string, std::string, std::string, std::string, std::string, std::string, ::DBus::Path, uint32_t, std::string, ::DBus::Path > > argout;
-                ri >> argout;
-                return argout;
-            }
-
-            std::vector< ::DBus::Struct< std::string, std::string, std::string, std::string, std::string, std::string, ::DBus::Path, uint32_t, std::string, ::DBus::Path > > ListUnitsFiltered(const std::vector< std::string >& argin0)
-            {
-                ::DBus::CallMessage call;
-                ::DBus::MessageIter wi = call.writer();
-
-                wi << argin0;
-                call.member("ListUnitsFiltered");
-                ::DBus::Message ret = invoke_method (call);
-                ::DBus::MessageIter ri = ret.reader();
-
-                std::vector< ::DBus::Struct< std::string, std::string, std::string, std::string, std::string, std::string, ::DBus::Path, uint32_t, std::string, ::DBus::Path > > argout;
-                ri >> argout;
-                return argout;
-            }
-
-            std::vector< ::DBus::Struct< std::string, std::string, std::string, std::string, std::string, std::string, ::DBus::Path, uint32_t, std::string, ::DBus::Path > > ListUnitsByPatterns(const std::vector< std::string >& argin0, const std::vector< std::string >& argin1)
-            {
-                ::DBus::CallMessage call;
-                ::DBus::MessageIter wi = call.writer();
-
-                wi << argin0;
-                wi << argin1;
-                call.member("ListUnitsByPatterns");
-                ::DBus::Message ret = invoke_method (call);
-                ::DBus::MessageIter ri = ret.reader();
-
-                std::vector< ::DBus::Struct< std::string, std::string, std::string, std::string, std::string, std::string, ::DBus::Path, uint32_t, std::string, ::DBus::Path > > argout;
-                ri >> argout;
-                return argout;
-            }
-
-            std::vector< ::DBus::Struct< std::string, std::string, std::string, std::string, std::string, std::string, ::DBus::Path, uint32_t, std::string, ::DBus::Path > > ListUnitsByNames(const std::vector< std::string >& argin0)
-            {
-                ::DBus::CallMessage call;
-                ::DBus::MessageIter wi = call.writer();
-
-                wi << argin0;
-                call.member("ListUnitsByNames");
-                ::DBus::Message ret = invoke_method (call);
-                ::DBus::MessageIter ri = ret.reader();
-
-                std::vector< ::DBus::Struct< std::string, std::string, std::string, std::string, std::string, std::string, ::DBus::Path, uint32_t, std::string, ::DBus::Path > > argout;
-                ri >> argout;
-                return argout;
-            }
-
-            void Reload()
-            {
-                ::DBus::CallMessage call;
-                call.member("Reload");
-                ::DBus::Message ret = invoke_method (call);
-            }
-
-            void Reexecute()
-            {
-                ::DBus::CallMessage call;
-                call.member("Reexecute");
-                ::DBus::Message ret = invoke_method (call);
-            }
-
-            void Exit()
-            {
-                ::DBus::CallMessage call;
-                call.member("Exit");
-                ::DBus::Message ret = invoke_method (call);
-            }
-
-            void Reboot()
-            {
-                ::DBus::CallMessage call;
-                call.member("Reboot");
-                ::DBus::Message ret = invoke_method (call);
-            }
-
-            void PowerOff()
-            {
-                ::DBus::CallMessage call;
-                call.member("PowerOff");
-                ::DBus::Message ret = invoke_method (call);
-            }
-
-            std::vector< ::DBus::Struct< std::string, std::string > > ListUnitFiles()
-            {
-                ::DBus::CallMessage call;
-                call.member("ListUnitFiles");
-                ::DBus::Message ret = invoke_method (call);
-                ::DBus::MessageIter ri = ret.reader();
-
-                std::vector< ::DBus::Struct< std::string, std::string > > argout;
-                ri >> argout;
-                return argout;
-            }
-
-            std::vector< ::DBus::Struct< std::string, std::string > > ListUnitFilesByPatterns(const std::vector< std::string >& argin0, const std::vector< std::string >& argin1)
-            {
-                ::DBus::CallMessage call;
-                ::DBus::MessageIter wi = call.writer();
-
-                wi << argin0;
-                wi << argin1;
-                call.member("ListUnitFilesByPatterns");
-                ::DBus::Message ret = invoke_method (call);
-                ::DBus::MessageIter ri = ret.reader();
-
-                std::vector< ::DBus::Struct< std::string, std::string > > argout;
-                ri >> argout;
-                return argout;
-            }
-
-            std::string GetUnitFileState(const std::string& argin0)
-            {
-                ::DBus::CallMessage call;
-                ::DBus::MessageIter wi = call.writer();
-
-                wi << argin0;
-                call.member("GetUnitFileState");
-                ::DBus::Message ret = invoke_method (call);
-                ::DBus::MessageIter ri = ret.reader();
-
-                std::string argout;
-                ri >> argout;
-                return argout;
-            }
     };
-
 }
-
 
 
 class SystemD : public systemd1::Manager_proxy,
@@ -498,6 +263,15 @@ class SystemD : public systemd1::Manager_proxy,
 
 };
 
+class LoginD : public login1::Manager_proxy,
+    public DBus::IntrospectableProxy,
+    public DBus::ObjectProxy
+{
+    public:
+        LoginD(DBus::Connection con, const char *path, const char *name) : DBus::ObjectProxy(con, path, name) {};
+
+};
+
 namespace systemd
 {
     class unit : public systemd1::Unit_proxy,
@@ -506,6 +280,36 @@ namespace systemd
     {
         public:
             unit(DBus::Connection con, const char *path, const char *name) : DBus::ObjectProxy(con, path, name) {};
+    };
+
+    class login_manager
+    {
+        private:
+            const char *path = "org/freedesktop/login1";
+            const char *name = "org.freedesktop.login1";
+            DBus::BusDispatcher dispatcher;
+            DBus::Connection con;
+            LoginD logind;
+
+            DBus::Connection SetDispatcher(DBus::BusDispatcher &dispatcher)
+            {
+                DBus::default_dispatcher = &dispatcher;
+                return DBus::Connection::SystemBus();
+            }
+
+        public:
+            login_manager(): con(SetDispatcher(dispatcher)), logind(con, path, name) {};
+
+            void PowerOff()
+            {
+                logind.PowerOff(false);
+            }
+
+            void Reboot()
+            {
+                logind.Reboot(false);
+            }
+
     };
 
     class manager
@@ -556,14 +360,33 @@ namespace systemd
                 return systemd.ReloadUnit(service_name, mode);
             }
 
-            void PowerOff()
+            bool EnableUnit(const std::string &service_name)
             {
-                return systemd.PowerOff();
+                std::vector<std::string> services{service_name};
+                bool retval;
+                std::vector< ::DBus::Struct< std::string, std::string, std::string > > retvector;
+
+                systemd.EnableUnitFiles(services, false, false, retval, retvector);
+
+                return retval;
             }
 
-            void Reboot()
+            bool DisableUnit(const std::string &service_name)
             {
-                return systemd.Reboot();
+                std::vector<std::string> services{service_name};
+
+                std::vector< ::DBus::Struct< std::string, std::string, std::string > > retvector;
+
+                systemd.DisableUnitFiles(services, false, retvector);
+
+                if(retvector.size() != 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
     };
 }
